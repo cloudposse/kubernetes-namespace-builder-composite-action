@@ -75,10 +75,3 @@ jobs:
           expected: 'cp-app-foo-suffix'
           actual: "${{ steps.custom-name.outputs.kubernetes-namespace }}"
           
-  teardown:
-    runs-on: ubuntu-latest
-    needs: [assert]
-    if: ${{ always() }}
-    steps:
-      - name: Tear down
-        run: echo "Do Tear down"
