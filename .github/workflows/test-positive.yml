@@ -22,7 +22,6 @@ jobs:
         flavor: ['pr-number', 'branch-name', 'custom']
         app-name: ['namespace-builder']
         prefix: ['cp']
-        name: ['', 'custom-name']
         suffix: ['']
         deny-list: ['']
     steps:
@@ -35,24 +34,38 @@ jobs:
           flavor: ${{ matrix.flavor }}
           app-name: ${{ matrix.app-name }}
           prefix: ${{ matrix.prefix }}
-          name: ${{ matrix.name }}
+          name: ${{ matrix.flavor == 'custom' && 'custom-name' || '' }}
           suffix: ${{ matrix.suffix }}
           deny-list: ${{ matrix.deny-list }}
 
-    outputs:
-      ${{ matrix.flavor }}_${{ matrix.name }}_result: ${{ steps.current.outputs.kubernetes-namespace }}
-
-  assert:
+      - uses: cloudposse/github-action-matrix-outputs-write@0.3.1
+        id: out
+        with:
+          matrix-step-name: test
+          matrix-key: ${{ matrix.flavor }}
+          outputs: |-
+            result: ${{ steps.current.outputs.kubernetes-namespace }}
+  
+  read:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
-      - run: echo ${{ needs.test.outputs }}
-      - run: echo ${{ needs.test.outputs["pr-number__result"] }}
-      - run: echo ${{ needs.test.outputs["pr-number_custom-name_result"] }}
-      - run: echo ${{ needs.test.outputs["branch-name__result"] }}
-      - run: echo ${{ needs.test.outputs["branch-name_custom-name_result"] }}
-      - run: echo ${{ needs.test.outputs["custom__result"] }}
-      - run: echo ${{ needs.test.outputs["custom_custom-name_result"] }}
+      - uses: cloudposse/github-action-matrix-outputs-read@main
+        id: read
+        with:
+          matrix-step-name: test
+
+    outputs:
+      result: "${{ steps.read.outputs.result }}"
+      
+  assert:
+    runs-on: ubuntu-latest
+    needs: [read]
+    steps:
+      - run: echo "PR namespace " ${{ fromJson(needs.read.outputs.result).result.pr-number }}
+      - run: echo "Branch namespace " ${{ fromJson(needs.read.outputs.result).result.branch-name }}
+      - run: echo "Custom namespace " ${{ fromJson(needs.read.outputs.result).result.custom }}
+      
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'true'
