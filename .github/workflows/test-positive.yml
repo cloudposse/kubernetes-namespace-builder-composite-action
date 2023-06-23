@@ -17,13 +17,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
-    strategy:
-      matrix: 
-        flavor: ['pr-number', 'branch-name', 'custom']
-        app-name: ['namespace-builder']
-        prefix: ['cp']
-        suffix: ['']
-        deny-list: ['', 'kube-system,kube-public,default']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -38,21 +31,21 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - run: echo "Current namespace '${{ steps.current.outputs.kubernetes-namespace }}'"
+      - run: echo "Current namespace '${{ steps.pr-number.outputs.kubernetes-namespace }}'"
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-pr-'
           comparison: startsWith
-          actual: "${{ steps.current.outputs.kubernetes-namespace }}"
+          actual: "${{ steps.pr-number.outputs.kubernetes-namespace }}"
       - uses: nick-fields/assert-action@v1
         with:
           expected: '-suffix'
           comparison: endsWith
-          actual: "${{ steps.current.outputs.kubernetes-namespace }}"
+          actual: "${{ steps.pr-number.outputs.kubernetes-namespace }}"
           
       - uses: ./
         name: Test branch name
-        id: pr-number
+        id: branch-name
         with:
           flavor: branch-name
           app-name: app
@@ -60,15 +53,15 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - run: echo "Current namespace '${{ steps.current.outputs.kubernetes-namespace }}'"
+      - run: echo "Current namespace '${{ steps.branch-name.outputs.kubernetes-namespace }}'"
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-pr-${{ github.head_ref }}'
-          actual: "${{ steps.current.outputs.kubernetes-namespace }}"
+          actual: "${{ steps.branch-name.outputs.kubernetes-namespace }}"
           
       - uses: ./
         name: Test custom name
-        id: pr-number
+        id: custom-name
         with:
           flavor: custom
           app-name: app
@@ -80,7 +73,7 @@ jobs:
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-foo-suffix'
-          actual: "${{ steps.current.outputs.kubernetes-namespace }}"
+          actual: "${{ steps.custom-name.outputs.kubernetes-namespace }}"
           
   teardown:
     runs-on: ubuntu-latest
