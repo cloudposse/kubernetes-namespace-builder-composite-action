@@ -79,7 +79,7 @@ runs:
       id: name
       with:
         input-string: "${{steps.name-from-flavor.outputs.result}}"
-        operation: dns-subdomain
+        operation: kebabcase
 
     - uses: cloudposse/github-action-string-transformer@main
       id: suffix
