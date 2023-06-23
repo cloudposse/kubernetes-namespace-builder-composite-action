@@ -61,7 +61,7 @@ runs:
       with:
         script: |
           if('${{inputs.flavor}}' === 'pr-number') {
-            const prNumber = context.payload.number;
+            const prNumber = github.event.number;
             return 'pr-' + prNumber
           }
           

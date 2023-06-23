@@ -23,7 +23,7 @@ jobs:
         app-name: ['namespace-builder']
         prefix: ['cp']
         suffix: ['']
-        deny-list: ['', 'kube-system,kube-public,default', '']
+        deny-list: ['', 'kube-system,kube-public,default']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -38,39 +38,11 @@ jobs:
           suffix: ${{ matrix.suffix }}
           deny-list: ${{ matrix.deny-list }}
 
-      - uses: cloudposse/github-action-matrix-outputs-write@0.3.1
-        id: out
-        with:
-          matrix-step-name: test
-          matrix-key: ${{ matrix.flavor }}
-          outputs: |-
-            result: ${{ steps.current.outputs.kubernetes-namespace }}
-  
-  read:
-    runs-on: ubuntu-latest
-    needs: [test]
-    steps:
-      - uses: cloudposse/github-action-matrix-outputs-read@main
-        id: read
-        with:
-          matrix-step-name: test
-
-    outputs:
-      result: "${{ steps.read.outputs.result }}"
-      
-  assert:
-    runs-on: ubuntu-latest
-    needs: [read]
-    steps:
-      - run: echo "DEBUG " ${{ fromJson(needs.read.outputs.result) }}
-      - run: echo "PR namespace " ${{ fromJson(needs.read.outputs.result).result.pr-number }}
-      - run: echo "Branch namespace " ${{ fromJson(needs.read.outputs.result).result.branch-name }}
-      - run: echo "Custom namespace " ${{ fromJson(needs.read.outputs.result).result.custom }}
-      
+      - run: echo "Current namespace '${{ steps.current.outputs.kubernetes-namespace }}'"
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'true'
-          actual: "${{ needs.test.outputs.result }}"
+          expected: '${{matrix.prefix}}-${{matrix.app-name}}-${{ matrix.flavor == "custom" && "custom-name" || matrix.flavor == pr-number "" }}-${{matrix.suffix}}'
+          actual: "${{ steps.current.outputs.kubernetes-namespace }}"
 
   teardown:
     runs-on: ubuntu-latest
