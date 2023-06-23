@@ -1,6 +1,6 @@
 name: 'CICD Kubernetes Namespace Builder GitHub action'
 description: 'Constructs a name for a namespace based on inputs'
-author: @cloudposse
+author: "@cloudposse"
 branding:
   icon: 'cloud'
   color: 'white'
