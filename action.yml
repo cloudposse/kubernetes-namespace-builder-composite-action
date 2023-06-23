@@ -1,23 +1,119 @@
-name: 'Example composite GitHub action'
-description: 'Example composite GitHub action'
-author: hello@cloudposse.com
+name: 'CICD Kubernetes Namespace Builder GitHub action'
+description: 'Constructs a name for a namespace based on inputs'
+author: @cloudposse
 branding:
-  icon: 'file'
+  icon: 'cloud'
   color: 'white'
 inputs:
-  param1:
+  flavor:
+    required: false
+    description: "Flavor of naming, either `pr-number`, `branch-name`, or `custom`. Note `name` must be set if using `custom`"
+    default: "pr-number"
+  
+  app-name:
+    required: false
+    description: "Name of the application"
+    default: ""
+  
+  prefix:
+    required: false
+    description: "Prefix for namespace"
+    default: ""
+  
+  name:
     required: true
-    description: "Input parameter placeholder"
-    default: "true"
+    description: "name for namespace if using flavor `custom`, still prefixed"
+    default: ""
+  
+  suffix:
+    required: false
+    description: "Suffix for namespace, appended if still under max length (63 characters)"
+    default: ""
+
+  deny-list:
+    required: false
+    description: "Comma seperated list of strings to deny in the namespace name"
+    default: "kube-system,kube-public,default"
+
 outputs:
-  result1:
+  kubernetes-namespace:
     description: "Output result placeholder"
     value: "${{ steps.context.outputs.action-result }}"
+
 runs:
   using: "composite"
   steps:
-    - id: context
-      shell: bash
-      run: |
-          echo "action-result=${{ inputs.param1 }}" >> $GITHUB_OUTPUT
+    - uses: cloudposse/github-action-string-transformer@main
+      id: prefix
+      with:
+        operation: 'kebabcase'
+        input-string: "${{inputs.prefix}}"
 
+    - uses: cloudposse/github-action-string-transformer@main
+      id: app-name
+      with:
+        operation: 'kebabcase'
+        input-string: "${{inputs.app-name}}"
+
+    - name: Set Name from Flavor
+      id: name-from-flavor
+      uses: actions/github-script@v3
+      with:
+        script: |
+          if('${{inputs.flavor}}' === 'pr-number') {
+            const prNumber = context.payload.number;
+            return 'pr-' + prNumber
+          }
+          
+          if('${{inputs.flavor}}' === 'branch-name') {
+            const branchName = context.payload.ref.replace('refs/heads/', '');
+            return branchName
+          } 
+          
+          if('${{inputs.flavor}}' === 'custom') {
+              return '${{inputs.name}}'
+          }
+
+
+    - uses: cloudposse/github-action-string-transformer@main
+      id: name
+      with:
+        input-string: "${{steps.name-from-flavor.outputs.result}}"
+        operation: dns-subdomain
+
+    - uses: cloudposse/github-action-string-transformer@main
+      id: suffix
+      with:
+        operation: 'kebabcase'
+        input-string: "${{inputs.suffix}}"
+        
+    - name: Build Namespace
+      id: build-namespace
+      uses: actions/github-script@v3
+      with:
+        script: |
+          const prefix = '${{steps.prefix.outputs.output-string}}';
+          const appName = '${{steps.app-name.outputs.output-string}}';
+          const name = '${{steps.name.outputs.output-string}}';
+          const suffix = '${{steps.suffix.outputs.output-string}}';
+          const denyList = '${{inputs.deny-list}}'.split(',');
+          
+          let namespace = [prefix, appName, name, suffix].join('-');
+          
+          if(namespace.length > 63) {
+              namespace = [prefix, appName, name].join('-');
+              if(namespace.length > 63) {
+                  namespace = [prefix, name].join('-');
+              } else {
+                  throw new Error('Namespace is too long from name and prefix');
+              }
+          }
+          
+          if(denyList.some((deny) => namespace.includes(deny))) {
+              throw new Error('Namespace contains a denied string');
+          }
+          
+          
+          core.setOutput('kubernetes-namespace', namespace);
+          
+          return namespace
