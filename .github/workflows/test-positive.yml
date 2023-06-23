@@ -23,7 +23,7 @@ jobs:
         app-name: ['namespace-builder']
         prefix: ['cp']
         suffix: ['']
-        deny-list: ['']
+        deny-list: ['', 'kube-system,kube-public,default', '']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
