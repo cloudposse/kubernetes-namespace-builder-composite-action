@@ -17,7 +17,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [setup]
     strategy:
       matrix: 
         flavor: ['pr-number', 'branch-name', 'custom']
