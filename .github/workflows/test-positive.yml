@@ -34,7 +34,7 @@ jobs:
           flavor: ${{ matrix.flavor }}
           app-name: ${{ matrix.app-name }}
           prefix: ${{ matrix.prefix }}
-          name: ${{ matrix.flavor == 'custom' && custom-name || '' }}
+          name: ${{ matrix.flavor == 'custom' && 'custom-name' || '' }}
           suffix: ${{ matrix.suffix }}
           deny-list: ${{ matrix.deny-list }}
 
