@@ -71,7 +71,7 @@ runs:
           } 
           
           if('${{inputs.flavor}}' === 'custom') {
-              return '${{inputs.name}}'
+              return ${{inputs.name}}
           }
 
 
