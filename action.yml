@@ -47,13 +47,13 @@ runs:
       id: prefix
       with:
         operation: 'kebabcase'
-        input-string: "${{inputs.prefix}}"
+        input-string: ${{inputs.prefix}}
 
     - uses: cloudposse/github-action-string-transformer@main
       id: app-name
       with:
         operation: 'kebabcase'
-        input-string: "${{inputs.app-name}}"
+        input-string: ${{inputs.app-name}}
 
     - name: Set Name from Flavor
       id: name-from-flavor
@@ -78,14 +78,14 @@ runs:
     - uses: cloudposse/github-action-string-transformer@main
       id: name
       with:
-        input-string: "${{steps.name-from-flavor.outputs.result}}"
+        input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: kebabcase
 
     - uses: cloudposse/github-action-string-transformer@main
       id: suffix
       with:
         operation: 'kebabcase'
-        input-string: "${{inputs.suffix}}"
+        input-string: ${{inputs.suffix}}
         
     - name: Build Namespace
       id: build-namespace
@@ -109,7 +109,7 @@ runs:
               }
           }
           
-          if(denyList.some((deny) => namespace.includes(deny))) {
+          if(denyList.some((deny) => deny != '' && namespace.includes(deny))) {
               throw new Error('Namespace contains a denied string');
           }
           
