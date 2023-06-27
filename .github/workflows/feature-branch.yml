@@ -2,14 +2,80 @@ name: Feature branch
 on:
   pull_request:
     branches: [ main ]
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
-  perform:
-    uses: cloudposse/github-actions-workflows-github-action-composite/.github/workflows/feature-branch.yml@main
-    with:
-      organization: "${{ github.event.repository.owner.login }}"
-      repository: "${{ github.event.repository.name }}"
-      ref: "${{ github.event.pull_request.head.ref  }}"
-    secrets:
-      github-private-actions-pat: "${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./
+        name: Test PR Number
+        id: pr-number
+        with:
+          flavor: pr-number
+          app-name: app
+          prefix: cp
+          suffix: suffix
+          deny-list: kube-system,kube-public,default
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'cp-app-pr-'
+          comparison: startsWith
+          actual: ${{ steps.pr-number.outputs.kubernetes-namespace }}
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: '-suffix'
+          comparison: endsWith
+          actual: ${{ steps.pr-number.outputs.kubernetes-namespace }}
+
+      - uses: ./
+        name: Test branch name
+        id: branch-name
+        with:
+          flavor: branch-name
+          app-name: app
+          prefix: cp
+          suffix: suffix
+          deny-list: kube-system,kube-public,default
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'cp-app-${{ github.head_ref }}-suffix'
+          actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
+
+      - uses: ./
+        name: Test custom name
+        id: custom-name
+        with:
+          flavor: custom
+          app-name: app
+          name: foo
+          prefix: cp
+          suffix: suffix
+          deny-list: kube-system,kube-public,default
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'cp-app-foo-suffix'
+          actual: ${{ steps.custom-name.outputs.kubernetes-namespace }}
+          
+      - uses: ./
+        name: Test Override PR
+        id: custom-pr-number
+        with:
+          flavor: pr-number
+          app-name: app
+          prefix: cp
+          suffix: suffix
+          deny-list: kube-system,kube-public,default
+          override-pr-number: 123
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'cp-app-pr-123-suffix'
+          actual: ${{ steps.custom-pr-number.outputs.kubernetes-namespace }}
+          
