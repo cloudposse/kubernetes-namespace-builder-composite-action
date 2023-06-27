@@ -21,7 +21,7 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - run: echo "Current namespace '${{ steps.pr-number.outputs.kubernetes-namespace }}'"
+      - run: echo "Current namespace ${{ steps.pr-number.outputs.kubernetes-namespace }}"
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-pr-'
