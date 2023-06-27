@@ -38,7 +38,7 @@ inputs:
 outputs:
   kubernetes-namespace:
     description: "Output result placeholder"
-    value: "${{ steps.context.outputs.action-result }}"
+    value: "${{ steps.build-namespace.outputs.result }}"
 
 runs:
   using: "composite"
@@ -94,7 +94,7 @@ runs:
         script: |
           const prefix = '${{steps.prefix.outputs.output-string}}';
           const appName = '${{steps.app-name.outputs.output-string}}';
-          const name = '${{steps.name.outputs.output-string}}';
+          const name = ${{steps.name.outputs.output-string}};
           const suffix = '${{steps.suffix.outputs.output-string}}';
           const denyList = '${{inputs.deny-list}}'.split(',');
           
@@ -117,3 +117,5 @@ runs:
           core.setOutput('kubernetes-namespace', namespace);
           
           return namespace
+
+    
