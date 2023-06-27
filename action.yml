@@ -112,7 +112,7 @@ runs:
           const suffix = '${{steps.suffix.outputs.output-string}}';
           const denyList = '${{inputs.deny-list}}'.split(',');
           
-          let namespace = [prefix, appName, name, suffix].join('-');
+          let namespace = [prefix, appName, name, suffix].filter(n => n).join('-');
           
           if(namespace.length > 63) {
               namespace = [prefix, appName, name].join('-');
@@ -127,6 +127,13 @@ runs:
               throw new Error('Namespace contains a denied string');
           }
           
+          if (namespace.charAt(namespace.length - 1) == '-') {
+              namespace = namespace.slice(0, -1);
+          }
+          
+          if (namespace.charAt(0) == '-') {
+              namespace = namespace.slice(1);
+          }
           
           core.setOutput('kubernetes-namespace', namespace);
           
