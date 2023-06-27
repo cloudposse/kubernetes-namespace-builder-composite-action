@@ -21,7 +21,6 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - run: echo "Current namespace ${{ steps.pr-number.outputs.kubernetes-namespace }}"
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-pr-'
@@ -43,10 +42,9 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - run: echo "Current namespace '${{ steps.branch-name.outputs.kubernetes-namespace }}'"
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'cp-app-pr-${{ github.head_ref }}-suffix'
+          expected: 'cp-app-${{ github.head_ref }}-suffix'
           actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
 
       - uses: ./
@@ -64,4 +62,20 @@ jobs:
         with:
           expected: 'cp-app-foo-suffix'
           actual: ${{ steps.custom-name.outputs.kubernetes-namespace }}
+          
+      - uses: ./
+        name: Test Override PR
+        id: custom-pr-number
+        with:
+          flavor: pr-number
+          app-name: app
+          prefix: cp
+          suffix: suffix
+          deny-list: kube-system,kube-public,default
+          override-pr-number: 123
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'cp-app-pr-123-suffix'
+          actual: ${{ steps.custom-pr-number.outputs.kubernetes-namespace }}
           
