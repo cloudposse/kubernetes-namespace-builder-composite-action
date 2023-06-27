@@ -66,6 +66,7 @@ runs:
           }
           
           if('${{inputs.flavor}}' === 'branch-name') {
+            console.log(context)
             const branchName = context.payload.ref.replace('refs/heads/', '');
             return branchName
           } 
@@ -116,7 +117,7 @@ runs:
           
           core.setOutput('kubernetes-namespace', namespace);
           
-          console.log('Namespace: ' + namespace)
+          console.log('Namespace Generated: ' + namespace)
           
           return namespace
 
