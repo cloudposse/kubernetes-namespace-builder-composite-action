@@ -26,12 +26,12 @@ jobs:
         with:
           expected: 'cp-app-pr-'
           comparison: startsWith
-          actual: "${{ steps.pr-number.outputs.kubernetes-namespace }}"
+          actual: ${{ steps.pr-number.outputs.kubernetes-namespace }}
       - uses: nick-fields/assert-action@v1
         with:
           expected: '-suffix'
           comparison: endsWith
-          actual: "${{ steps.pr-number.outputs.kubernetes-namespace }}"
+          actual: ${{ steps.pr-number.outputs.kubernetes-namespace }}
 
       - uses: ./
         name: Test branch name
@@ -47,7 +47,7 @@ jobs:
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-pr-${{ github.head_ref }}'
-          actual: "${{ steps.branch-name.outputs.kubernetes-namespace }}"
+          actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
 
       - uses: ./
         name: Test custom name
@@ -63,5 +63,5 @@ jobs:
       - uses: nick-fields/assert-action@v1
         with:
           expected: 'cp-app-foo-suffix'
-          actual: "${{ steps.custom-name.outputs.kubernetes-namespace }}"
+          actual: ${{ steps.custom-name.outputs.kubernetes-namespace }}
           
