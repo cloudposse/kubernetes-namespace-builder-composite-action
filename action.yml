@@ -80,13 +80,12 @@ runs:
             if('${{inputs.override-branch-name}}' !== '') {
               return ${{inputs.override-branch-name}}
             }
-            console.log(context.payload.pull_request.head.ref)
             const branchName = context.payload.pull_request.head.ref.replace('refs/heads/', '');
             return branchName
           } 
           
           if('${{inputs.flavor}}' === 'custom') {
-              return ${{inputs.name}}
+              return '${{inputs.name}}'
           }
 
 
