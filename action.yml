@@ -70,7 +70,7 @@ runs:
         script: |
           if('${{inputs.flavor}}' === 'pr-number') {
             if('${{inputs.override-pr-number}}' !== '') {
-              return 'pr-' + ${{inputs.override-pr-number}}
+              return 'pr-${{inputs.override-pr-number}}'
             }
             const prNumber = context.payload.number;
             return 'pr-' + prNumber
