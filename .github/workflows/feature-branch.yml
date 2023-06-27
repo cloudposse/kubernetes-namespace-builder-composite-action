@@ -79,3 +79,17 @@ jobs:
           expected: 'cp-app-pr-123-suffix'
           actual: ${{ steps.custom-pr-number.outputs.kubernetes-namespace }}
           
+      - uses: ./
+        name: Test Branch Name no suffix
+        id: branch-no-suffix
+        with:
+          flavor: branch-name
+          app-name: app
+          deny-list: kube-system,kube-public,default
+          override-branch-name: foo
+          
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'app-foo'
+          actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
+          

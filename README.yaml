@@ -64,14 +64,35 @@ usage: |-
       context:
         runs-on: ubuntu-latest
         steps:
-          - name: Example action
+          - name: Example PR Number
             uses: cloudposse/kubernetes-namespace-builder-composite-action@main
             id: kubernetes-namespace
             with:
               flavor: pr-number
               app-name: my-app
-            #  prefix: prefix
-            #  suffix: suffix
+            # prefix: prefix
+            # suffix: suffix
+              deny-list: kube-system,kube-public,default
+            
+          - name: Example Branch Name
+            uses: cloudposse/kubernetes-namespace-builder-composite-action@main
+            id: branch-name
+            with:
+              flavor: branch-name
+              app-name: app
+            # prefix: cp
+            # suffix: suffix
+              deny-list: kube-system,kube-public,default
+
+          - name: Example Custom Naming convention
+            uses: cloudposse/kubernetes-namespace-builder-composite-action@main
+            id: custom-name
+            with:
+              flavor: custom
+              name: my-custom-name
+              app-name: app
+            # prefix: cp
+            # suffix: suffix
               deny-list: kube-system,kube-public,default
   
         outputs:
