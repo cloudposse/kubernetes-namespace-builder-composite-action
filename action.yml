@@ -65,7 +65,7 @@ runs:
 
     - name: Set Name from Flavor
       id: name-from-flavor
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         script: |
           if('${{inputs.flavor}}' === 'pr-number') {
@@ -103,7 +103,7 @@ runs:
         
     - name: Build Namespace
       id: build-namespace
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         script: |
           const prefix = '${{steps.prefix.outputs.output-string}}';
