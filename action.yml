@@ -37,8 +37,8 @@ inputs:
 
 outputs:
   kubernetes-namespace:
-    description: "Output result placeholder"
-    value: ${{ steps.build-namespace.outputs.result }}
+    description: "Generated kubernetes namespace"
+    value: ${{ steps.output.outputs.result }}
 
 runs:
   using: "composite"
@@ -116,6 +116,11 @@ runs:
           
           core.setOutput('kubernetes-namespace', namespace);
           
+          console.log('Namespace: ' + namespace)
+          
           return namespace
 
-    
+
+    - id: output
+      run: |
+        echo "result=${{ steps.build-namespace.outputs.result }}" >> "$GITHUB_OUTPUT"
