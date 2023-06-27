@@ -122,5 +122,6 @@ runs:
 
 
     - id: output
+      shell: bash
       run: |
         echo "result=${{ steps.build-namespace.outputs.result }}" >> "$GITHUB_OUTPUT"
