@@ -50,6 +50,9 @@ references:
 
 # How to use this project
 usage: |-
+  Please see [workflows dir](https://github.com/cloudposse/kubernetes-namespace-builder-composite-action/tree/main/.github/workflows) for examples of how to use this action.
+  
+  
   ```yaml
     name: Pull Request
     on:
