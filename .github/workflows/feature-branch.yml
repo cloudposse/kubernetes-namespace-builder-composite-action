@@ -46,7 +46,7 @@ jobs:
       - run: echo "Current namespace '${{ steps.branch-name.outputs.kubernetes-namespace }}'"
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'cp-app-pr-${{ github.head_ref }}'
+          expected: 'cp-app-pr-${{ github.head_ref }}-suffix'
           actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
 
       - uses: ./
