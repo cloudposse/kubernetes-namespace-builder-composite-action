@@ -66,8 +66,8 @@ runs:
           }
           
           if('${{inputs.flavor}}' === 'branch-name') {
-            console.log(context)
-            const branchName = context.payload.ref.replace('refs/heads/', '');
+            console.log(context.payload.pull_request.base.ref)
+            const branchName = context.payload.pull_request.base.ref.replace('refs/heads/', '');
             return branchName
           } 
           
