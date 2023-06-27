@@ -5,7 +5,7 @@
 #
 
 # Name of this project
-name: example-github-action-composite
+name: kubernetes-namespace-builder-composite-action
 
 # Tags of this project
 tags:
@@ -18,13 +18,13 @@ tags:
 license: "APACHE2"
 
 # Canonical GitHub repo
-github_repo: cloudposse/example-github-action-composite
+github_repo: cloudposse/kubernetes-namespace-builder-composite-action
 
 # Badges to display
 badges:
   - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse/example-github-action-composite.svg"
-    url: "https://github.com/cloudposse/example-github-action-composite/releases/latest"
+    image: "https://img.shields.io/github/release/cloudposse/kubernetes-namespace-builder-composite-action.svg"
+    url: "https://github.com/cloudposse/kubernetes-namespace-builder-composite-action/releases/latest"
   - name: "Slack Community"
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
@@ -32,11 +32,13 @@ badges:
 related: []
 
 # Short description of this project
-description: Template repository of composite GitHub Action
+description: Generate Kubernetes namespace for a preview environment
 
 introduction: |-
-  This is template repository to create composite GitHub Actions. 
-  Feel free to use it as reference and starting point.
+  This composite action builds a kubernetes namespace based on inputs. It currently supports 3 flavors:
+   - `pr-number`
+   - `branch-name`
+   - `custom`
 
 references:
   - name: "github-actions-workflows"
@@ -60,13 +62,18 @@ usage: |-
         runs-on: ubuntu-latest
         steps:
           - name: Example action
-            uses: cloudposse/example-github-action-composite@main
-            id: example
+            uses: cloudposse/kubernetes-namespace-builder-composite-action@main
+            id: kubernetes-namespace
             with:
-              param1: true
+              flavor: pr-number
+              app-name: my-app
+            #  prefix: prefix
+            #  suffix: suffix
+              deny-list: kube-system,kube-public,default
   
         outputs:
-          result: ${{ steps.example.outputs.result1 }}
+          result: ${{ steps.kubernetes-namespace.outputs.kubernetes-namespace }}
+
   ```
 
 include:
@@ -74,5 +81,5 @@ include:
 
 # Contributors to this project
 contributors:
-  - name: "Igor Rodionov"
-    github: "goruha"
+  - name: "Benjamin Smith"
+    github: "benbentwo"
