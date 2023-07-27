@@ -93,3 +93,17 @@ jobs:
           expected: 'app-foo'
           actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
           
+
+      - uses: ./
+        name: Test Branch Name Jira
+        id: branch-jira
+        with:
+          flavor: branch-name
+          app-name: app
+          deny-list: kube-system,kube-public,default
+          override-branch-name: ABC-123/foo-bar
+          
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'app-abc-123-foo-bar'
+          actual: ${{ steps.branch-jira.outputs.kubernetes-namespace }}
