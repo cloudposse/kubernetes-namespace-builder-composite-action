@@ -102,7 +102,7 @@ jobs:
           flavor: branch-name
           app-name: app
           deny-list: kube-system,kube-public,default
-          override-branch-name: ABC-123/foo-bar
+          override-branch-name: ABC-123/FOO_bar
           
       - uses: nick-fields/assert-action@v1
         with:
