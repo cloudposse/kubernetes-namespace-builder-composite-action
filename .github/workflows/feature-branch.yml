@@ -107,7 +107,7 @@ jobs:
         with:
           expected: 'app'
           comparison: endsWith
-          actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
+          actual: ${{ steps.branch-live.outputs.kubernetes-namespace }}
       
       
       - uses: ./
