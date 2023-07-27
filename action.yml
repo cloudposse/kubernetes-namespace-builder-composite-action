@@ -101,7 +101,6 @@ runs:
       with:
         operation: kebabcase
         input-string: Hello World feature/UI-123_my-feature
-        max-length: -1
 
 
     - shell: bash
