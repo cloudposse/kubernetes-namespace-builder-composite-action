@@ -123,5 +123,5 @@ jobs:
 
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'baz'
+          expected: 'app-baz'
           actual: ${{ steps.enabled-false.outputs.kubernetes-namespace }}
