@@ -95,7 +95,12 @@ runs:
             if('${{inputs.override-branch-name}}' !== '') {
               return '${{inputs.override-branch-name}}'
             }
-            return context.payload.pull_request.head.ref.replace('refs/heads/', '');
+            if(context.payload.pull_request) {
+              return context.payload.pull_request.head.ref.replace('refs/heads/', '');
+            } else {
+              return context.ref.replace('refs/heads/', '');
+            } 
+            
           } 
           
           if('${{inputs.flavor}}' === 'custom') {
