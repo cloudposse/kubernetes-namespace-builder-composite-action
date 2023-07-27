@@ -95,11 +95,6 @@ runs:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
-    - shell: bash
-      run: |
-        echo ${{ steps.name.outputs.output-string }}
-        
-        
     - uses: cloudposse/github-action-string-transformer@main
       id: suffix
       with:
