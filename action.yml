@@ -80,8 +80,7 @@ runs:
             if('${{inputs.override-branch-name}}' !== '') {
               return '${{inputs.override-branch-name}}'
             }
-            const branchName = context.payload.pull_request.head.ref.replace('refs/heads/', '');
-            return branchName
+            return context.payload.pull_request.head.ref.replace('refs/heads/', '');
           } 
           
           if('${{inputs.flavor}}' === 'custom') {
@@ -89,11 +88,12 @@ runs:
           }
 
 
-    - uses: cloudposse/github-action-string-transformer@main
+    - name: "Transform Name (Branch or PR) to Kebabcase" 
+      uses: cloudposse/github-action-string-transformer@main
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
-        operation: kebabcase
+        operation: 'kebabcase'
 
     - uses: cloudposse/github-action-string-transformer@main
       id: suffix

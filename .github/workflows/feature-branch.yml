@@ -41,10 +41,11 @@ jobs:
           prefix: cp
           suffix: suffix
           deny-list: kube-system,kube-public,default
+          override-branch-name: Foo
 
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'cp-app-${{ github.head_ref }}-suffix'
+          expected: 'cp-app-foo-suffix'
           actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
 
       - uses: ./
@@ -93,3 +94,17 @@ jobs:
           expected: 'app-foo'
           actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
           
+
+      - uses: ./
+        name: Test Branch Name Jira
+        id: branch-jira
+        with:
+          flavor: branch-name
+          app-name: app
+          deny-list: kube-system,kube-public,default
+          override-branch-name: 'ABC-123/FOO_bar'
+          
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'app-abc-123-foo-bar'
+          actual: ${{ steps.branch-jira.outputs.kubernetes-namespace }}
