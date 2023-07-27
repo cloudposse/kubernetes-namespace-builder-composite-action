@@ -93,7 +93,7 @@ runs:
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
-        operation: kebabcase
+        operation: 'kebabcase'
 
     - shell: bash
       run: |
