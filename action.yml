@@ -5,6 +5,16 @@ branding:
   icon: 'cloud'
   color: 'white'
 inputs:
+  enabled:
+    required: false
+    description: "Whether or not to run this action, empty string or false is false, anything else is true"
+    default: "true"
+  
+  fallback:
+    required: false
+    description: "Fallback value if the action is disabled"
+    default: ""
+  
   flavor:
     required: false
     description: "Flavor of naming, either `pr-number`, `branch-name`, or `custom`. Note `name` must be set if using `custom`"
@@ -68,6 +78,11 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
+          if('${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === '') {
+            core.setOutput('kubernetes-namespace', '${{inputs.fallback}}');
+            return '${{inputs.fallback}}';
+          }
+          
           if('${{inputs.flavor}}' === 'pr-number') {
             if('${{inputs.override-pr-number}}' !== '') {
               return 'pr-${{inputs.override-pr-number}}'
@@ -80,28 +95,35 @@ runs:
             if('${{inputs.override-branch-name}}' !== '') {
               return '${{inputs.override-branch-name}}'
             }
-            return context.payload.pull_request.head.ref.replace('refs/heads/', '');
+            if(context.payload.pull_request) {
+              return context.payload.pull_request.head.ref.replace('refs/heads/', '');
+            } else {
+              return context.ref.replace('refs/heads/', '');
+            } 
+            
           } 
           
           if('${{inputs.flavor}}' === 'custom') {
               return '${{inputs.name}}'
           }
-
-
+          
     - name: "Transform Name (Branch or PR) to Kebabcase" 
       uses: cloudposse/github-action-string-transformer@main
+      if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
     - uses: cloudposse/github-action-string-transformer@main
+      if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: suffix
       with:
         operation: 'kebabcase'
         input-string: ${{inputs.suffix}}
         
     - name: Build Namespace
+      if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: build-namespace
       uses: actions/github-script@v6
       with:
@@ -145,4 +167,4 @@ runs:
     - id: output
       shell: bash
       run: |
-        echo "result=${{ steps.build-namespace.outputs.result }}" >> "$GITHUB_OUTPUT"
+        echo "result=${{ steps.build-namespace.outputs.result || steps.name-from-flavor.outputs.result }}" >> "$GITHUB_OUTPUT"

@@ -3,6 +3,7 @@ on:
   pull_request:
     branches: [ main ]
     types: [ opened, synchronize, reopened ]
+  push:
 
 jobs:
   test:
@@ -94,7 +95,21 @@ jobs:
           expected: 'app-foo'
           actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
           
+      - uses: ./
+        name: Test Branch Name Live
+        id: branch-live
+        with:
+          flavor: branch-name
+          suffix: app
+          deny-list: kube-system,kube-public,default
 
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'app'
+          comparison: endsWith
+          actual: ${{ steps.branch-live.outputs.kubernetes-namespace }}
+      
+      
       - uses: ./
         name: Test Branch Name Jira
         id: branch-jira
@@ -108,3 +123,20 @@ jobs:
         with:
           expected: 'app-abc-123-foo-bar'
           actual: ${{ steps.branch-jira.outputs.kubernetes-namespace }}
+
+      - uses: ./
+        name: Test enabled false and fallback
+        id: enabled-false
+        with:
+          flavor: branch-name
+          app-name: app
+          prefix: prefix
+          enabled: false
+          fallback: baz
+          deny-list: kube-system,kube-public,default
+          override-branch-name: 'ABC-123/FOO_bar'
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'baz'
+          actual: ${{ steps.enabled-false.outputs.kubernetes-namespace }}
