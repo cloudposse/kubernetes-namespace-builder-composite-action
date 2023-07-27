@@ -77,8 +77,8 @@ runs:
           }
           
           if('${{inputs.flavor}}' === 'branch-name') {
-            if('${{inputs.override-branch-name}}' !== '') {
-              return '${{inputs.override-branch-name}}'.replace(/['"]+/g, '')
+            if(${{inputs.override-branch-name}} !== '') {
+              return ${{inputs.override-branch-name}}
             }
             return context.payload.pull_request.head.ref.replace('refs/heads/', '');
           } 
@@ -89,23 +89,14 @@ runs:
 
 
     - name: "Transform Name (Branch or PR) to Kebabcase" 
-      uses: cloudposse/github-action-string-transformer@d8d15989df21dc14a89c357311ea0b87a357ca98
+      uses: cloudposse/github-action-string-transformer@main
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
-    
-    - name: "debug" 
-      uses: cloudposse/github-action-string-transformer@d8d15989df21dc14a89c357311ea0b87a357ca98
-      id: debug
-      with:
-        operation: kebabcase
-        input-string: Hello World feature/UI-123_my-feature
-
 
     - shell: bash
       run: |
-        echo Debug ${{ steps.debug.outputs.output-string }}
         echo ${{ steps.name.outputs.output-string }}
         
         
