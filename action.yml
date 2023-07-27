@@ -107,11 +107,6 @@ runs:
               return '${{inputs.name}}'
           }
           
-    - id: output
-      shell: bash
-      run: |
-        echo "result=${{ steps.name-from-flavor.outputs.result }}" >> "$GITHUB_OUTPUT"
-
     - name: "Transform Name (Branch or PR) to Kebabcase" 
       uses: cloudposse/github-action-string-transformer@main
       if: (inputs.enabled != 'false' && inputs.enabled != '')
@@ -170,7 +165,6 @@ runs:
 
 
     - id: output
-      if: (inputs.enabled != 'false' && inputs.enabled != '')
       shell: bash
       run: |
-        echo "result=${{ steps.build-namespace.outputs.result }}" >> "$GITHUB_OUTPUT"
+        echo "result=${{ steps.build-namespace.outputs.result || steps.name-from-flavor.outputs.result }}" >> "$GITHUB_OUTPUT"
