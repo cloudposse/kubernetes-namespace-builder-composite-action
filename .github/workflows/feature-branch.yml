@@ -97,7 +97,7 @@ jobs:
           
       - uses: ./
         name: Test Branch Name Live
-        id: branch-no-suffix
+        id: branch-live
         with:
           flavor: branch-name
           suffix: app
