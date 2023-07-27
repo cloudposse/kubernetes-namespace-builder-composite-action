@@ -106,7 +106,11 @@ runs:
           if('${{inputs.flavor}}' === 'custom') {
               return '${{inputs.name}}'
           }
-
+          
+    - id: output
+      shell: bash
+      run: |
+        echo "result=${{ steps.name-from-flavor.outputs.result }}" >> "$GITHUB_OUTPUT"
 
     - name: "Transform Name (Branch or PR) to Kebabcase" 
       uses: cloudposse/github-action-string-transformer@main
