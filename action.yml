@@ -78,7 +78,7 @@ runs:
           
           if('${{inputs.flavor}}' === 'branch-name') {
             if('${{inputs.override-branch-name}}' !== '') {
-              return '${{inputs.override-branch-name}}'
+              return '${{inputs.override-branch-name}}'.replace(/['"]+/g, '')
             }
             return context.payload.pull_request.head.ref.replace('refs/heads/', '');
           } 
