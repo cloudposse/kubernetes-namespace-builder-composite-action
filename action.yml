@@ -105,21 +105,21 @@ runs:
 
     - name: "Transform Name (Branch or PR) to Kebabcase" 
       uses: cloudposse/github-action-string-transformer@main
-      if: '${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === ''
+      if: inputs.enabled == 'false' || inputs.enabled == ''
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
     - uses: cloudposse/github-action-string-transformer@main
-      if: '${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === ''
+      if: inputs.enabled == 'false' || inputs.enabled == ''
       id: suffix
       with:
         operation: 'kebabcase'
         input-string: ${{inputs.suffix}}
         
     - name: Build Namespace
-      if: '${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === ''
+      if: inputs.enabled == 'false' || inputs.enabled == ''
       id: build-namespace
       uses: actions/github-script@v6
       with:
@@ -161,7 +161,7 @@ runs:
 
 
     - id: output
-      if: '${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === ''
+      if: inputs.enabled == 'false' || inputs.enabled == ''
       shell: bash
       run: |
         echo "result=${{ steps.build-namespace.outputs.result }}" >> "$GITHUB_OUTPUT"
