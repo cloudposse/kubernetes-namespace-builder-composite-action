@@ -89,14 +89,14 @@ runs:
 
 
     - name: "Transform Name (Branch or PR) to Kebabcase" 
-      uses: cloudposse/github-action-string-transformer@main
+      uses: cloudposse/github-action-string-transformer@d8d15989df21dc14a89c357311ea0b87a357ca98
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
     
     - name: "debug" 
-      uses: cloudposse/github-action-string-transformer@main
+      uses: cloudposse/github-action-string-transformer@d8d15989df21dc14a89c357311ea0b87a357ca98
       id: debug
       with:
         operation: kebabcase
