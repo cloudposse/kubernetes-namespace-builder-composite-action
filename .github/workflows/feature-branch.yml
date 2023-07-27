@@ -95,7 +95,21 @@ jobs:
           expected: 'app-foo'
           actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
           
+      - uses: ./
+        name: Test Branch Name Live
+        id: branch-no-suffix
+        with:
+          flavor: branch-name
+          suffix: app
+          deny-list: kube-system,kube-public,default
 
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'app'
+          comparison: endsWith
+          actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
+      
+      
       - uses: ./
         name: Test Branch Name Jira
         id: branch-jira
@@ -116,6 +130,7 @@ jobs:
         with:
           flavor: branch-name
           app-name: app
+          prefix: prefix
           enabled: false
           fallback: baz
           deny-list: kube-system,kube-public,default
@@ -123,5 +138,5 @@ jobs:
 
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'app-baz'
+          expected: 'baz'
           actual: ${{ steps.enabled-false.outputs.kubernetes-namespace }}
