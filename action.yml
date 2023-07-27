@@ -5,6 +5,16 @@ branding:
   icon: 'cloud'
   color: 'white'
 inputs:
+  enabled:
+    required: false
+    description: "Whether or not to run this action, empty string or false is false, anything else is true"
+    default: "true"
+  
+  fallback:
+    required: false
+    description: "Fallback value if the action is disabled"
+    default: ""
+  
   flavor:
     required: false
     description: "Flavor of naming, either `pr-number`, `branch-name`, or `custom`. Note `name` must be set if using `custom`"
@@ -68,6 +78,11 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
+          if('${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === '') {
+            core.setOutput('kubernetes-namespace', '${{inputs.fallback}}');
+            return '${{inputs.fallback}}';
+          }
+          
           if('${{inputs.flavor}}' === 'pr-number') {
             if('${{inputs.override-pr-number}}' !== '') {
               return 'pr-${{inputs.override-pr-number}}'

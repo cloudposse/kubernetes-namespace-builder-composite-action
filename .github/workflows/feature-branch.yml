@@ -108,3 +108,19 @@ jobs:
         with:
           expected: 'app-abc-123-foo-bar'
           actual: ${{ steps.branch-jira.outputs.kubernetes-namespace }}
+
+      - uses: ./
+        name: Test enabled false and fallback
+        id: enabled-false
+        with:
+          flavor: branch-name
+          app-name: app
+          enabled: false
+          fallback: baz
+          deny-list: kube-system,kube-public,default
+          override-branch-name: 'ABC-123/FOO_bar'
+
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: 'baz'
+          actual: ${{ steps.enabled-false.outputs.kubernetes-namespace }}
