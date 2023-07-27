@@ -95,6 +95,8 @@ runs:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
+
+
     - shell: bash
       run: |
         echo ${{ steps.name.outputs.output-string }}
