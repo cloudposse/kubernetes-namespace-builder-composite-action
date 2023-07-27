@@ -41,10 +41,11 @@ jobs:
           prefix: cp
           suffix: suffix
           deny-list: kube-system,kube-public,default
+          override-branch-name: Foo
 
       - uses: nick-fields/assert-action@v1
         with:
-          expected: 'cp-app-${{ github.head_ref }}-suffix'
+          expected: 'cp-app-foo-suffix'
           actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
 
       - uses: ./
