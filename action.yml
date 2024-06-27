@@ -9,32 +9,32 @@ inputs:
     required: false
     description: "Whether or not to run this action, empty string or false is false, anything else is true"
     default: "true"
-  
+
   fallback:
     required: false
     description: "Fallback value if the action is disabled"
     default: ""
-  
+
   flavor:
     required: false
     description: "Flavor of naming, either `pr-number`, `branch-name`, or `custom`. Note `name` must be set if using `custom`"
     default: "pr-number"
-  
+
   app-name:
     required: false
     description: "Name of the application"
     default: ""
-  
+
   prefix:
     required: false
     description: "Prefix for namespace"
     default: ""
-  
+
   name:
     required: true
     description: "name for namespace if using flavor `custom`, still prefixed"
     default: ""
-  
+
   suffix:
     required: false
     description: "Suffix for namespace, appended if still under max length (63 characters)"
@@ -44,15 +44,15 @@ inputs:
     required: false
     description: "Comma seperated list of strings to deny in the namespace name"
     default: "kube-system,kube-public,default"
-  
+
   override-pr-number:
     required: false
     description: "Override the PR number, useful for manually helping calculate the PR number"
-    
+
   override-branch-name:
     required: false
     description: "Override the branch name, useful for manually helping calculate the branch name"
-  
+
 outputs:
   kubernetes-namespace:
     description: "Generated kubernetes namespace"
@@ -61,13 +61,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: cloudposse/github-action-string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@main
       id: prefix
       with:
         operation: 'kebabcase'
         input-string: ${{inputs.prefix}}
 
-    - uses: cloudposse/github-action-string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@main
       id: app-name
       with:
         operation: 'kebabcase'
@@ -82,7 +82,7 @@ runs:
             core.setOutput('kubernetes-namespace', '${{inputs.fallback}}');
             return '${{inputs.fallback}}';
           }
-          
+
           if('${{inputs.flavor}}' === 'pr-number') {
             if('${{inputs.override-pr-number}}' !== '') {
               return 'pr-${{inputs.override-pr-number}}'
@@ -90,7 +90,7 @@ runs:
             const prNumber = context.payload.number;
             return 'pr-' + prNumber
           }
-          
+
           if('${{inputs.flavor}}' === 'branch-name') {
             if('${{inputs.override-branch-name}}' !== '') {
               return '${{inputs.override-branch-name}}'
@@ -99,29 +99,29 @@ runs:
               return context.payload.pull_request.head.ref.replace('refs/heads/', '');
             } else {
               return context.ref.replace('refs/heads/', '');
-            } 
-            
-          } 
-          
+            }
+
+          }
+
           if('${{inputs.flavor}}' === 'custom') {
               return '${{inputs.name}}'
           }
-          
-    - name: "Transform Name (Branch or PR) to Kebabcase" 
-      uses: cloudposse/github-action-string-transformer@main
+
+    - name: "Transform Name (Branch or PR) to Kebabcase"
+      uses: cloudposse-github-actions/string-transformer@main
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
-    - uses: cloudposse/github-action-string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@main
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: suffix
       with:
         operation: 'kebabcase'
         input-string: ${{inputs.suffix}}
-        
+
     - name: Build Namespace
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: build-namespace
@@ -133,9 +133,9 @@ runs:
           const name = ${{steps.name.outputs.output-string}};
           const suffix = '${{steps.suffix.outputs.output-string}}';
           const denyList = '${{inputs.deny-list}}'.split(',');
-          
+
           let namespace = [prefix, appName, name, suffix].filter(n => n).join('-');
-          
+
           if(namespace.length > 63) {
               namespace = [prefix, appName, name].join('-');
               if(namespace.length > 63) {
@@ -144,23 +144,23 @@ runs:
                   throw new Error('Namespace is too long from name and prefix');
               }
           }
-          
+
           if(denyList.some((deny) => deny != '' && namespace.includes(deny))) {
               throw new Error('Namespace contains a denied string');
           }
-          
+
           if (namespace.charAt(namespace.length - 1) == '-') {
               namespace = namespace.slice(0, -1);
           }
-          
+
           if (namespace.charAt(0) == '-') {
               namespace = namespace.slice(1);
           }
-          
+
           core.setOutput('kubernetes-namespace', namespace);
-          
+
           console.log('Namespace Generated: ' + namespace)
-          
+
           return namespace
 
 
