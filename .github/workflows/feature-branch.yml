@@ -22,12 +22,12 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'cp-app-pr-'
           comparison: startsWith
           actual: ${{ steps.pr-number.outputs.kubernetes-namespace }}
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: '-suffix'
           comparison: endsWith
@@ -44,7 +44,7 @@ jobs:
           deny-list: kube-system,kube-public,default
           override-branch-name: Foo
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'cp-app-foo-suffix'
           actual: ${{ steps.branch-name.outputs.kubernetes-namespace }}
@@ -60,7 +60,7 @@ jobs:
           suffix: suffix
           deny-list: kube-system,kube-public,default
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'cp-app-foo-suffix'
           actual: ${{ steps.custom-name.outputs.kubernetes-namespace }}
@@ -76,7 +76,7 @@ jobs:
           deny-list: kube-system,kube-public,default
           override-pr-number: 123
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'cp-app-pr-123-suffix'
           actual: ${{ steps.custom-pr-number.outputs.kubernetes-namespace }}
@@ -90,7 +90,7 @@ jobs:
           deny-list: kube-system,kube-public,default
           override-branch-name: foo
           
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'app-foo'
           actual: ${{ steps.branch-no-suffix.outputs.kubernetes-namespace }}
@@ -103,7 +103,7 @@ jobs:
           suffix: app
           deny-list: kube-system,kube-public,default
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'app'
           comparison: endsWith
@@ -119,7 +119,7 @@ jobs:
           deny-list: kube-system,kube-public,default
           override-branch-name: 'ABC-123/FOO_bar'
           
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'app-abc-123-foo-bar'
           actual: ${{ steps.branch-jira.outputs.kubernetes-namespace }}
@@ -136,7 +136,7 @@ jobs:
           deny-list: kube-system,kube-public,default
           override-branch-name: 'ABC-123/FOO_bar'
 
-      - uses: nick-fields/assert-action@v1
+      - uses: nick-fields/assert-action@v2
         with:
           expected: 'baz'
           actual: ${{ steps.enabled-false.outputs.kubernetes-namespace }}
