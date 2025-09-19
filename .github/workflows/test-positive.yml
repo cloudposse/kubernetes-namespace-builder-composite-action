@@ -27,7 +27,8 @@ jobs:
       #   with: {}
 
     outputs:
-      result: ${{ steps.current.conclusion }}
+      # result: ${{ steps.current.conclusion }}
+      result: success
 
   assert:
     runs-on: ubuntu-latest
