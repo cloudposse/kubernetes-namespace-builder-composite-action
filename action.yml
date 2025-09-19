@@ -75,7 +75,7 @@ runs:
 
     - name: Set Name from Flavor
       id: name-from-flavor
-      uses: actions/github-script@v6
+      uses: actions/github-script@v8
       with:
         script: |
           if('${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === '') {
@@ -125,7 +125,7 @@ runs:
     - name: Build Namespace
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: build-namespace
-      uses: actions/github-script@v6
+      uses: actions/github-script@v8
       with:
         script: |
           const prefix = '${{steps.prefix.outputs.output-string}}';
