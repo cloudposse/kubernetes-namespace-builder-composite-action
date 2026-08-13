@@ -61,13 +61,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: cloudposse-github-actions/string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@e7ea3aa776faf1442a2d9c41ac4ed3948c095014 # main
       id: prefix
       with:
         operation: 'kebabcase'
         input-string: ${{inputs.prefix}}
 
-    - uses: cloudposse-github-actions/string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@e7ea3aa776faf1442a2d9c41ac4ed3948c095014 # main
       id: app-name
       with:
         operation: 'kebabcase'
@@ -75,7 +75,7 @@ runs:
 
     - name: Set Name from Flavor
       id: name-from-flavor
-      uses: actions/github-script@v6
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           if('${{inputs.enabled}}' === 'false' || '${{inputs.enabled}}' === '') {
@@ -108,14 +108,14 @@ runs:
           }
 
     - name: "Transform Name (Branch or PR) to Kebabcase"
-      uses: cloudposse-github-actions/string-transformer@main
+      uses: cloudposse-github-actions/string-transformer@e7ea3aa776faf1442a2d9c41ac4ed3948c095014 # main
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: name
       with:
         input-string: ${{steps.name-from-flavor.outputs.result}}
         operation: 'kebabcase'
 
-    - uses: cloudposse-github-actions/string-transformer@main
+    - uses: cloudposse-github-actions/string-transformer@e7ea3aa776faf1442a2d9c41ac4ed3948c095014 # main
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: suffix
       with:
@@ -125,7 +125,7 @@ runs:
     - name: Build Namespace
       if: (inputs.enabled != 'false' && inputs.enabled != '')
       id: build-namespace
-      uses: actions/github-script@v6
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
       with:
         script: |
           const prefix = '${{steps.prefix.outputs.output-string}}';

@@ -24,7 +24,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Find default branch name
         id: defaultBranch
@@ -33,7 +33,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           default_branch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
-          printf "::set-output name=defaultBranch::%s\n" "${default_branch}"
+          printf "defaultBranch=%s\n" "${default_branch}" >> "$GITHUB_OUTPUT"
           printf "defaultBranchRef.name=%s\n" "${default_branch}"
 
       - name: Update readme
@@ -54,7 +54,7 @@ jobs:
       - name: Create Pull Request
         # This action will not create or change a pull request if there are no changes to make.
         # If a PR of the auto-update/readme branch is open, this action will just update it, not create a new PR.
-        uses: cloudposse/actions/github/create-pull-request@0.33.0
+        uses: cloudposse/actions/github/create-pull-request@d4ad42a5434d60d082a2c4fd585c2f8acba4e719 # 0.33.0
         with:
           token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
           commit-message: Update README.md and docs
